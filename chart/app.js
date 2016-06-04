@@ -14,7 +14,7 @@ statusText.addEventListener('click', function() {
 function handleSensorMeasurement(sensorMeasurement) {
   sensorMeasurement.addEventListener('characteristicvaluechanged', event => {
     var sensorMeasurement = readSensor.parseSensor(event.target.value);
-    statusText.innerHTML = sensorMeasurement.sensor + ' &#x2764;';
+    statusText.innerHTML = sensorMeasurement.sensor + ' &#x027F7';
     readings.push(sensorMeasurement.sensor);
     drawWaves();
   });
@@ -33,6 +33,8 @@ function drawWaves() {
     canvas.width = parseInt(getComputedStyle(canvas).width.slice(0, -2)) * devicePixelRatio;
     canvas.height = parseInt(getComputedStyle(canvas).height.slice(0, -2)) * devicePixelRatio;
 
+    var low_val = 1000;
+    var spread = 150
     var context = canvas.getContext('2d');
     var margin = 2;
     var max = Math.max(0, Math.round(canvas.width / 11));
@@ -41,8 +43,8 @@ function drawWaves() {
     context.strokeStyle = '#00796B';
     if (mode === 'bar') {
       for (var i = 0; i < Math.max(readings.length, max); i++) {
-        console.log(canvas.height, readings[i + offset]);
-        var barHeight = Math.round(readings[i + offset ] * canvas.height / 2000);
+        // console.log(canvas.height, readings[i + offset]);
+        var barHeight = Math.round(((readings[i + offset ] - low_val) / spread) * canvas.height);
         context.rect(11 * i + margin, canvas.height - barHeight, margin, Math.max(0, barHeight - margin));
         context.stroke();
       }
@@ -54,7 +56,7 @@ function drawWaves() {
       context.shadowColor = '#333';
       context.shadowOffsetY = '1';
       for (var i = 0; i < Math.max(readings.length, max); i++) {
-        var lineHeight = Math.round(readings[i + offset ] * canvas.height / 2000);
+        var lineHeight = Math.round(((readings[i + offset ] - low_val) / spread) * canvas.height);
         if (i === 0) {
           context.moveTo(11 * i, canvas.height - lineHeight);
         } else {
