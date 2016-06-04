@@ -41,10 +41,10 @@
       let result = {};
       let index = 1;
       if (rate16Bits) {
-        result = value.getUint16(index, /*littleEndian=*/true);
+        result.sensor = value.getUint16(index, /*littleEndian=*/true);
         index += 2;
       } else {
-        result = value.getUint8(index);
+        result.sensor = value.getUint8(index);
         index += 1;
       }
       return result;
