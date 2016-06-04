@@ -20,10 +20,10 @@
           server.getPrimaryService('11118000-2222-3333-4444-555566667777').then(service => {
             return Promise.all([
               this._cacheCharacteristic(service, '11118010-2222-3333-4444-555566667777'),
-            ])
+            ]);
           })
         ]);
-      })
+      });
     }
     startNotificationsSensorMeasurement() {
       return this._startNotifications('11118010-2222-3333-4444-555566667777');
@@ -35,18 +35,9 @@
 
     parseSensor(value) {
       // In Chrome 50+, a DataView is returned instead of an ArrayBuffer.
-      value = value.buffer ? value : new DataView(value);
-      let flags = value.getUint8(0);
-      let rate16Bits = flags & 0x1;
       let result = {};
-      let index = 1;
-      if (rate16Bits) {
-        result.sensor = value.getUint16(index, /*littleEndian=*/true);
-        index += 2;
-      } else {
-        result.sensor = value.getUint8(index);
-        index += 1;
-      }
+      value = value.buffer ? value : new DataView(value);
+      result.sensor = value.getUint16(0, /*littleEndian=*/true);
       return result;
     }
 
